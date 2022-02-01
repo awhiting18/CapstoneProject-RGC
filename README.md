@@ -1,4 +1,4 @@
-# CapstoneProject-WebGameControl
+# CapstoneProject-RemoteGameControl (RGC)
 
 Group Members:
 AJ Whiting
