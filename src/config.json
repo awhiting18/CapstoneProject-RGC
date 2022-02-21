@@ -1,6 +1,7 @@
 {
-    "app_id" : "1347610",
-    "key" : "b45097db4e2d98d2104c",
-    "secret" : "b6794cd179cc4f5e4bb5",
-    "cluster" : "us2"
+    "app_id": "1350541",
+    "key": "4547b3f55e41b562fc7a",
+    "secret": "b1a487249d7e52f03958",
+    "cluster": "us2",
+    "useTLS": true
 }
