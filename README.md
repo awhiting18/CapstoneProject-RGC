@@ -10,8 +10,11 @@ $ npm install
 $ npm install pusher-js
 $ npm install pusher
 
+create:
+.env.local file containing authentication information present in config.json
+
 then:
-$ npm start
+$ npm run dev
 
 # Features
 
