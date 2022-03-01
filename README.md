@@ -7,6 +7,7 @@ will redirect to the game where the user can play using their phone.
 
 enter:
 $ npm install
+$ npm install pusher-js
 
 then:
 $ npm start
