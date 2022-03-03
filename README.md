@@ -7,11 +7,11 @@ will redirect to the game where the user can play using their phone.
 
 enter:
 $ npm install
-*Not Necessary*$ npm install pusher-js
-*Not Necessary*$ npm install pusher
+ *Not Necessary* $ npm install pusher-js
+ *Not Necessary* $ npm install pusher
 
 create:
-*Not Necessary* .env.local file containing authentication information present in config.json
+ *Not Necessary* .env.local file containing authentication information present in config.json
 
 then:
 $ npm run build
