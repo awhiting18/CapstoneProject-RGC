@@ -3,12 +3,14 @@ import { useRouter } from 'next/router'
 import QRCode from '../assets/Controller_QRCode.svg'
 import config from '../config.json'
 import Pusher from 'pusher-js'
+import { useQRCode } from 'next-qrcode'
 
 function Home({ Component, pageProps }) {
   /**********SETTING UP STATE***********/
   const [channelCode, setChannelCode] = useState(createChannelCode(5))
   const [message, setMessage] = useState('None')
   const router = useRouter()
+  const { Canvas } = useQRCode()
 
   /*************FUNCTIONS***************/
   function createChannelCode(length) {
@@ -53,7 +55,24 @@ function Home({ Component, pageProps }) {
   return (
     <div className="App">
       <div>
-        <img source={QRCode} className="QRCode" height={'400'} width={'400'} />
+        <Canvas
+          text={
+            'https://objective-golick-b7cb36.netlify.app/controller?gameCode=' +
+            channelCode
+          }
+          options={{
+            type: 'image/jpeg',
+            quality: 0.3,
+            level: 'M',
+            margin: 3,
+            scale: 4,
+            width: 200,
+            color: {
+              dark: '#000000',
+              light: '#FFFFFF',
+            },
+          }}
+        />
       </div>
       <div>
         <text>Game Code: {channelCode}</text>
