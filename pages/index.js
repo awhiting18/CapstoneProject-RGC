@@ -52,26 +52,28 @@ function Home({ Component, pageProps }) {
 
   /**********Display************/
   return (
-    <div className="App">
-      <div>
-        <Canvas
-          text={'https://objective-golick-b7cb36.netlify.app/'}
-          options={{
-            type: 'image/jpeg',
-            quality: 0.3,
-            level: 'M',
-            margin: 3,
-            scale: 4,
-            width: 200,
-            color: {
-              dark: '#000000',
-              light: '#FFFFFF',
-            },
-          }}
-        />
-      </div>
-      <div>
-        <text>Game Code: {channelCode}</text>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-blue-500 py-2">
+      <div className="flex flex-col items-center justify-center rounded-md bg-white py-8 px-8">
+        <div>
+          <Canvas
+            text={'https://objective-golick-b7cb36.netlify.app/'}
+            options={{
+              type: 'image/jpeg',
+              quality: 0.3,
+              level: 'M',
+              margin: 3,
+              scale: 4,
+              width: 200,
+              color: {
+                dark: '#000000',
+                light: '#FFFFFF',
+              },
+            }}
+          />
+        </div>
+        <div>
+          <text className="font-bold">Game Code: {channelCode}</text>
+        </div>
       </div>
     </div>
   )
