@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import QRCode from '../assets/Controller_QRCode.svg'
 import config from '../config.json'
 import Pusher from 'pusher-js'
 import { useQRCode } from 'next-qrcode'
@@ -56,10 +55,7 @@ function Home({ Component, pageProps }) {
     <div className="App">
       <div>
         <Canvas
-          text={
-            'https://objective-golick-b7cb36.netlify.app/controller?gameCode=' +
-            channelCode
-          }
+          text={'https://objective-golick-b7cb36.netlify.app/'}
           options={{
             type: 'image/jpeg',
             quality: 0.3,
