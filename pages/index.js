@@ -42,6 +42,9 @@ function Home({ Component, pageProps }) {
     channel.bind('client-controllerconnect', (message) => {
       if (message == 'Connected') {
         redirect()
+        channel.trigger('client-controllerconnectresponse', 'Recieved')
+      } else {
+        channel.trigger('client-controllerconnectresponse', 'Error')
       }
     })
   }
