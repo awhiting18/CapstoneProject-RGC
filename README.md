@@ -19,6 +19,7 @@ then:
 
     $ npm run build
     $ npm start
+
 # Features
 
 -passes messages from client to server currently. Later, this will be the game side that the user connects to with their phone and the QR code.

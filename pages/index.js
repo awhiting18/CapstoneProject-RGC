@@ -24,7 +24,7 @@ function Home({ Component, pageProps }) {
 
   //This function will redirect the page to the game screen
   const redirect = () => {
-    router.push({ pathname: '/game', query: { gameCode: channelCode } })
+    router.push({ pathname: '/App', query: { gameCode: channelCode } })
   }
 
   /********************Pusher Variables******************/

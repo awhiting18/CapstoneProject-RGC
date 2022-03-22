@@ -29,7 +29,7 @@ export default function Game() {
     })
     channel = pusher.subscribe('private-pong' + gameCode)
     channel.bind('client-controllermovement', (move) => {
-      console.log('Movement Sent: ', move)
+      console.log('message: ', move)
       keyInput(move)
       setMessage(move)
     })
@@ -58,9 +58,9 @@ export default function Game() {
   const PADDLE_EDGE_SPACE = 1
 
   /* buttons */
-  const PLAYER_UP = 1 // up arrow
-  const PLAYER_DOWN = -1 // down arrow
-  const PAUSE = 0 // space
+  const PLAYER_UP = 1 // up
+  const PLAYER_DOWN = -1 // down
+  const PAUSE = 0 // pause
 
   const inner = {
     display: 'flex',
@@ -243,6 +243,7 @@ export default function Game() {
   }
 
   const keyInput = (keyCode) => {
+    console.log(keyCode)
     switch (keyCode) {
       case PLAYER_UP:
       case PLAYER_DOWN:
