@@ -271,18 +271,13 @@ export default function Game() {
   const divider = [...Array(ROW_SIZE / 2 + 2)].map((_) => <div>{'|'}</div>)
   return (
     <div style={outer}>
-      <h1>
-        {' '}
-        {'[space]'} {pause ? 'PLAY/pause' : 'play/PAUSE'}{' '}
-      </h1>
+      <h1> {pause ? 'PLAYING' : 'PAUSED'} </h1>
       <div style={inner}>
         <div style={style}>{board}</div>
         <div style={score}>{playerScore}</div>
         <div style={dividerStyle}> {divider} </div>
         <div style={dividerStyle}>{opponentScore}</div>
       </div>
-      <h3> {'press up and down to move'} </h3>
-      <div className="App">{message}</div>
     </div>
   )
 }
