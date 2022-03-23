@@ -11,16 +11,16 @@ export {
 }
 /* style sheet */
 const backgroundStyle = {
-    height: "35px",
-    width: "35px",
+    height: "50px",
+    width: "50px",
     borderStyle: "solid",
     justifyContent: "center",
     backgroundColor : "black",
-    borderRadius: "2px",
+    borderRadius: "0px",
 }
 const playerStyle = {
-    height: "35px",
-    width: "35px",
+    height: "50px",
+    width: "50px",
     borderStyle: "solid",
     justifyContent: "center",
     backgroundColor : "blue",
@@ -28,8 +28,8 @@ const playerStyle = {
 }
 
 const ballStyle = {
-    height: "35px",
-    width: "35px",
+    height: "50px",
+    width: "50px",
     display: "block",
     backgroundColor: "yellow",
     justifyContent: "center",

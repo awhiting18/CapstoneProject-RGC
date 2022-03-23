@@ -39,16 +39,17 @@ const dividerStyle = {
 }
 
 const score = {
-  marginLeft: '100px',
+  marginLeft: '440px',
   fontSize: '50px',
+  textAlign: 'right',
   color: 'white',
 }
 
 const style = {
-  width: '250px',
-  heigth: '250px',
+  width: '0px',
+  heigth: '500px',
   display: 'grid',
-  gridTemplate: `repeat(${ROW_SIZE}, 1fr) / repeat(${COL_SIZE}, 1fr)`,
+  gridTemplate: `repeat(${ROW_SIZE}, 0fr) / repeat(${COL_SIZE}, 0fr)`,
 }
 
 const InitialState = () => {
