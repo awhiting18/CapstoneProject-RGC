@@ -39,11 +39,11 @@ const dividerStyle = {
 }
 
 const score = {
-  marginLeft: '440px',
-  fontSize: '50px',
-  textAlign: 'right',
-  color: 'white',
-}
+    marginLeft: '0px',
+    width: '100px',
+    fontSize: '50px',
+    color: 'white',
+  }
 
 const style = {
   width: '0px',
@@ -73,6 +73,9 @@ const InitialState = () => {
   }
 }
 
+/* Timeout */
+let timeoutKey = 0
+
 export default withRouter(
   class GameVersion2 extends React.Component {
     constructor(props) {
@@ -92,6 +95,13 @@ export default withRouter(
       const playerEdge = isUp
         ? playerBoard[0]
         : playerBoard[PADDLE_BOARD_SIZE - 1]
+      
+      /* Timeout */
+      if (timeoutKey != 0)
+      {
+          clearTimeout(timeoutKey)
+      }
+      timeoutKey = setTimeout(disconnect, 45000)
 
       if (!this.touchingEdge(playerEdge)) {
         const deltaY = isUp ? -COL_SIZE : COL_SIZE
@@ -267,10 +277,12 @@ export default withRouter(
         <div style={outer}>
           <h1> {this.state.pause ? 'PAUSED' : 'PLAYING'} </h1>
           <div style={inner}>
-            <div style={style}>{board}</div>
             <div style={score}>{this.state.playerScore}</div>
-            <div style={dividerStyle}> {divider} </div>
+            <div style={dividerStyle}>{" | "}</div>
             <div style={dividerStyle}>{this.state.opponentScore}</div>
+          </div>
+          <div style={inner}>
+            <div style={style}>{board}</div>
           </div>
         </div>
       )
