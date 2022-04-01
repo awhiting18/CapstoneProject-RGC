@@ -1,283 +1,309 @@
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import Pusher from 'pusher-js'
-import config from '../config.json'
 import React from 'react'
 import Box, { BACKGROUND, PLAYER, BALL } from './components/box.js'
+import Pusher from 'pusher-js'
+import config from '../config.json'
+import { withRouter } from 'next/router'
 
-export default function Game() {
-  /**********Router Variables************/
-  const router = useRouter()
-  const gameCode = router.query.gameCode
+/* size */
+const ROW_SIZE = 10
+const COL_SIZE = 20
 
-  /**********Pusher Variables************/
-  let pusher
-  let channel
+/* paddle */
+const PADDLE_BOARD_SIZE = 3
+const PADDLE_EDGE_SPACE = 1
 
-  /**********Other Variables************/
-  const [message, setMessage] = useState('None')
+/* buttons */
+const PLAYER_UP = 1 // up arrow
+const PLAYER_DOWN = -1 // down arrow
+const PAUSE = 0 // space
 
-  /**********On Screen Load Functions************/
-  useEffect(() => {
-    onScreenLoad()
-  }, [])
-  const onScreenLoad = () => {
-    //Creating the pusher to listen in for the redirection signal
-    pusher = new Pusher(config.key, {
-      cluster: 'us2',
-      authEndpoint: 'api/pusher/auth',
-    })
-    channel = pusher.subscribe('private-pong' + gameCode)
-    channel.bind('client-controllermovement', (move) => {
-      console.log('message: ', move)
-      keyInput(move)
-      setMessage(move)
-    })
-    /* moving the ball */
-    setInterval(() => {
-      if (!pause) {
-        bounceBall()
-      }
-    }, ballSpeed)
-    /* moving the opponent */
-    setInterval(() => {
-      if (!pause) {
-        moveOpponent()
-      }
-    }, opponentSpeed)
-
-    document.title = 'ping-pong'
-  }
-
-  /* size */
-  const ROW_SIZE = 10
-  const COL_SIZE = 20
-
-  /* paddle */
-  const PADDLE_BOARD_SIZE = 3
-  const PADDLE_EDGE_SPACE = 1
-
-  /* buttons */
-  const PLAYER_UP = 1 // up
-  const PLAYER_DOWN = -1 // down
-  const PAUSE = 0 // pause
-
-  const inner = {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'justify',
-  }
-
-  const outer = {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'justify',
-    marginTop: '9em',
-    marginLeft: '25em',
-    Text: '100px',
-    padding: '10px',
-  }
-  const dividerStyle = {
-    marginLeft: '50px',
-    fontSize: '50px',
-    color: 'white',
-  }
-
-  const score = {
-    marginLeft: '100px',
-    fontSize: '50px',
-    color: 'white',
-  }
-
-  const style = {
-    width: '250px',
-    heigth: '250px',
-    display: 'grid',
-    gridTemplate: `repeat(${ROW_SIZE}, 1fr) / repeat(${COL_SIZE}, 1fr)`,
-  }
-
-  const InitialState = () => {
-    return {
-      /* board */
-      player: paddle.map((x) => x * COL_SIZE + PADDLE_EDGE_SPACE),
-      opponent: paddle.map((x) => (x + 1) * COL_SIZE - (PADDLE_EDGE_SPACE + 1)),
-      ball: Math.round((ROW_SIZE * COL_SIZE) / 2) + ROW_SIZE,
-      /* ball */
-      ballSpeed: 100,
-      deltaY: -COL_SIZE,
-      deltaX: -1, // -1 means the ball is moving towards player 1 means towards opponent
-      pause: true,
-      /* for dumb Ai */
-      opponentSpeed: 150,
-      opponentDir: false,
-      /* Score */
-      playerScore: 0,
-      opponentScore: 0,
-    }
-  }
-
-  const paddle = [...Array(PADDLE_BOARD_SIZE)].map((_, pos) => pos)
-  /***********Game State Variables*************/
-
-  /* board */
-  const [player, setPlayer] = useState(
-    paddle.map((x) => x * COL_SIZE + PADDLE_EDGE_SPACE)
-  )
-  const [opponent, setopponent] = useState(
-    paddle.map((x) => (x + 1) * COL_SIZE - (PADDLE_EDGE_SPACE + 1))
-  )
-  const [ball, setBall] = useState(
-    Math.round((ROW_SIZE * COL_SIZE) / 2) + ROW_SIZE
-  )
-  /* ball */
-  const [ballSpeed, setBallSpeed] = useState(100)
-  const [deltaX, setDeltaX] = useState(
-    -1 // -1 means the ball is moving towards player 1 means towards opponent
-  )
-  const [deltaY, setDeltaY] = useState(-COL_SIZE)
-  const [pause, setPause] = useState(true)
-
-  /* for dumb Ai */
-  const [opponentSpeed, setOpponentSpeed] = useState(150)
-  const [opponentDir, setOpponentDir] = useState(false)
-  /* Score */
-  const [playerScore, setPlayerScore] = useState(0)
-  const [opponentScore, setOpponentScore] = useState(0)
-
-  /**********************GAME FUNCTIONS***********************/
-
-  const resetGame = () => {
-    setBall(Math.round((ROW_SIZE * COL_SIZE) / 2) + ROW_SIZE)
-  }
-
-  const moveBoard = (playerBoard, isUp) => {
-    const playerEdge = isUp
-      ? playerBoard[0]
-      : playerBoard[PADDLE_BOARD_SIZE - 1]
-
-    if (!touchingEdge(playerEdge)) {
-      const deltaY = isUp ? -COL_SIZE : COL_SIZE
-      /* if ball touches the edge */
-      const newDir = (deltaY !== COL_SIZE) ^ isUp ? -deltaY : deltaY
-
-      if (!touchingEdge(ball)) {
-        switch (ball) {
-          case playerEdge + deltaY - 1:
-            setDeltaX(-1)
-            setDeltaY(newDir)
-            break
-          case playerEdge:
-            setDeltaY(newDir)
-            break
-          case playerEdge + deltaY + 1:
-            setDeltaX(1)
-            setDeltaY(newDir)
-            break
-        }
-      }
-      return playerBoard.map((x) => x + deltaY)
-    }
-    return false
-  }
-
-  const touchingEdge = (pos) =>
-    (0 <= pos && pos < COL_SIZE) ||
-    (COL_SIZE * (ROW_SIZE - 1) <= pos && pos < COL_SIZE * ROW_SIZE)
-
-  const touchingPaddle = (pos) => {
-    return (
-      player.indexOf(pos) !== -1 ||
-      opponent.indexOf(pos) !== -1 ||
-      state[deltaX === -1 ? 'player' : 'opponent'].indexOf(pos + deltaX) !== -1
-    )
-  }
-
-  const isScore = (pos) =>
-    (deltaX === -1 && pos % COL_SIZE === 0) ||
-    (deltaX === 1 && (pos + 1) % COL_SIZE === 0)
-
-  const moveOpponent = () => {
-    const movedPlayer = moveBoard(opponent, opponentDir)
-    movedPlayer ? setopponent(movedPlayer) : setOpponentDir(!opponentDir)
-  }
-
-  const touchingPaddleEdge = (pos) =>
-    player[0] === pos ||
-    player[PADDLE_BOARD_SIZE - 1] === pos ||
-    opponent[0] === pos ||
-    opponent[PADDLE_BOARD_SIZE - 1] === pos
-
-  const bounceBall = () => {
-    const newState = ball + deltaY + deltaX
-    if (touchingEdge(newState)) {
-      setDeltaY(-deltaY)
-    }
-
-    if (touchingPaddleEdge(newState)) {
-      setDeltaY(-deltaY)
-    }
-
-    if (touchingPaddle(newState)) {
-      setDeltaX(-deltaX)
-    }
-
-    /* updating board */
-    setBall(newState)
-
-    /* checking if loss or won */
-    if (isScore(newState)) {
-      if (deltaX !== -1) {
-        /* player won */
-
-        setPlayerScore(playerScore + 1)
-        setBall(newState)
-      } else {
-        /* opponent won */
-
-        setPlayerScore(opponentScore + 1)
-        setBall(newState)
-      }
-      setPause(true)
-      resetGame()
-    }
-  }
-
-  const keyInput = (keyCode) => {
-    console.log(keyCode)
-    switch (keyCode) {
-      case PLAYER_UP:
-      case PLAYER_DOWN:
-        const movedPlayer = moveBoard(player, keyCode === PLAYER_UP)
-        if (movedPlayer) {
-          setPlayer(movedPlayer)
-          setPause(false)
-        }
-        break
-      case PAUSE:
-        setPause(true)
-        break
-    }
-  }
-
-  const board = [...Array(ROW_SIZE * COL_SIZE)].map((_, pos) => {
-    let val = BACKGROUND
-    if (player.indexOf(pos) !== -1 || opponent.indexOf(pos) !== -1) {
-      val = PLAYER
-    } else if (ball === pos) {
-      val = BALL
-    }
-    return <Box key={pos} k={pos} name={val} />
-  })
-  const divider = [...Array(ROW_SIZE / 2 + 2)].map((_) => <div>{'|'}</div>)
-  return (
-    <div style={outer}>
-      <h1> {pause ? 'PLAYING' : 'PAUSED'} </h1>
-      <div style={inner}>
-        <div style={style}>{board}</div>
-        <div style={score}>{playerScore}</div>
-        <div style={dividerStyle}> {divider} </div>
-        <div style={dividerStyle}>{opponentScore}</div>
-      </div>
-    </div>
-  )
+const inner = {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'justify',
 }
+
+const outer = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'justify',
+  marginTop: '9em',
+  marginLeft: '25em',
+  Text: '100px',
+  padding: '10px',
+}
+const dividerStyle = {
+  marginLeft: '50px',
+  fontSize: '50px',
+  color: 'white',
+}
+
+const score = {
+  marginLeft: '0px',
+  width: '100px',
+  fontSize: '50px',
+  color: 'white',
+}
+
+const style = {
+  width: '0px',
+  heigth: '500px',
+  display: 'grid',
+  gridTemplate: `repeat(${ROW_SIZE}, 0fr) / repeat(${COL_SIZE}, 0fr)`,
+}
+
+const InitialState = () => {
+  const paddle = [...Array(PADDLE_BOARD_SIZE)].map((_, pos) => pos)
+  return {
+    /* board */
+    player: paddle.map((x) => x * COL_SIZE + PADDLE_EDGE_SPACE),
+    opponent: paddle.map((x) => (x + 1) * COL_SIZE - (PADDLE_EDGE_SPACE + 1)),
+    ball: Math.round((ROW_SIZE * COL_SIZE) / 2) + ROW_SIZE,
+    /* ball */
+    ballSpeed: 100,
+    deltaY: -COL_SIZE,
+    deltaX: -1, // -1 means the ball is moving towards player 1 means towards opponent
+    pause: true,
+    /* for dumb Ai */
+    opponentSpeed: 150,
+    opponentDir: false,
+    /* Score */
+    playerScore: 0,
+    opponentScore: 0,
+  }
+}
+
+/* Timeout */
+let timeoutKey = 0
+
+export default withRouter(
+  class GameVersion2 extends React.Component {
+    constructor(props) {
+      super(props)
+      this.state = InitialState()
+      let pusher
+      let channel
+      let gameCode
+    }
+
+    //this function disconnects from the current game
+    disconnect = (timeout) => {
+      //If the disconnect was from a timeout, we send a message to the controller to  logout
+      if (timeout) {
+        this.channel.trigger('client-disconnect', 'Disconnect')
+      }
+      this.pusher.unsubscribe('private-pong' + this.gameCode)
+      this.props.router.push('./')
+    }
+
+    resetGame = () =>
+      this.setState({
+        ball: Math.round((ROW_SIZE * COL_SIZE) / 2) + ROW_SIZE,
+      })
+
+    moveBoard = (playerBoard, isUp) => {
+      const playerEdge = isUp
+        ? playerBoard[0]
+        : playerBoard[PADDLE_BOARD_SIZE - 1]
+
+      /* Timeout */
+      if (timeoutKey != 0) {
+        clearTimeout(timeoutKey)
+      }
+      timeoutKey = setTimeout(() => this.disconnect(true), 45000)
+
+      if (!this.touchingEdge(playerEdge)) {
+        const deltaY = isUp ? -COL_SIZE : COL_SIZE
+        /* if ball touches the edge */
+        const newDir =
+          (this.state.deltaY !== COL_SIZE) ^ isUp
+            ? -this.state.deltaY
+            : this.state.deltaY
+
+        if (!this.touchingEdge(this.state.ball)) {
+          switch (this.state.ball) {
+            case playerEdge + deltaY - 1:
+              this.setState({
+                deltaY: newDir,
+                deltaX: -1,
+              })
+              break
+            case playerEdge:
+              this.setState({
+                deltaY: newDir,
+              })
+              break
+            case playerEdge + deltaY + 1:
+              this.setState({
+                deltaY: newDir,
+                deltaX: 1,
+              })
+              break
+          }
+        }
+        return playerBoard.map((x) => x + deltaY)
+      }
+      return false
+    }
+
+    componentDidMount() {
+      //We first try to grab the pusher instance if it is already in memory.
+      this.pusher = Pusher.instances[0]
+      this.gameCode = this.props.router.query.gameCode
+
+      //Now we can use the pusher in memory to grab the channel that was previously subscribed to on the index page
+      this.channel =
+        this.pusher.channels.channels['private-pong' + this.gameCode]
+
+      //We check for channel being undefined and if it is, then we reconnect to the correct channel
+      if (this.channel == undefined) {
+        this.channel = this.pusher.subscribe('private-pong' + this.gameCode)
+      }
+
+      //Function bindings
+      this.channel.bind('client-controllermovement', (move) => {
+        this.handleInput(move)
+      })
+      this.channel.bind('client-disconnect', () => this.disconnect(false))
+
+      /* moving the ball */
+      setInterval(() => {
+        if (!this.state.pause) {
+          this.bounceBall()
+        }
+      }, this.state.ballSpeed)
+      /* moving the opponent */
+      setInterval(() => {
+        if (!this.state.pause) {
+          this.moveOpponent()
+        }
+      }, this.state.opponentSpeed)
+
+      document.title = 'ping-pong'
+      console.log(this.channel)
+    }
+
+    touchingEdge = (pos) =>
+      (0 <= pos && pos < COL_SIZE) ||
+      (COL_SIZE * (ROW_SIZE - 1) <= pos && pos < COL_SIZE * ROW_SIZE)
+
+    touchingPaddle = (pos) => {
+      return (
+        this.state.player.indexOf(pos) !== -1 ||
+        this.state.opponent.indexOf(pos) !== -1 ||
+        this.state[this.state.deltaX === -1 ? 'player' : 'opponent'].indexOf(
+          pos + this.state.deltaX
+        ) !== -1
+      )
+    }
+
+    isScore = (pos) =>
+      (this.state.deltaX === -1 && pos % COL_SIZE === 0) ||
+      (this.state.deltaX === 1 && (pos + 1) % COL_SIZE === 0)
+
+    moveOpponent = () => {
+      const movedPlayer = this.moveBoard(
+        this.state.opponent,
+        this.state.opponentDir
+      )
+      movedPlayer
+        ? this.setState({ opponent: movedPlayer })
+        : this.setState({ opponentDir: !this.state.opponentDir })
+    }
+
+    touchingPaddleEdge = (pos) =>
+      this.state.player[0] === pos ||
+      this.state.player[PADDLE_BOARD_SIZE - 1] === pos ||
+      this.state.opponent[0] === pos ||
+      this.state.opponent[PADDLE_BOARD_SIZE - 1] === pos
+
+    bounceBall = () => {
+      const newState = this.state.ball + this.state.deltaY + this.state.deltaX
+      if (this.touchingEdge(newState)) {
+        this.setState({ deltaY: -this.state.deltaY })
+      }
+
+      if (this.touchingPaddleEdge(newState)) {
+        this.setState({ deltaY: -this.state.deltaY })
+      }
+
+      if (this.touchingPaddle(newState)) {
+        this.setState({ deltaX: -this.state.deltaX })
+      }
+
+      /* updating board */
+      this.setState({ ball: newState })
+
+      /* checking if loss or won */
+      if (this.isScore(newState)) {
+        if (this.state.deltaX !== -1) {
+          /* player won */
+          this.setState({
+            playerScore: this.state.playerScore + 1,
+            ball: newState,
+          })
+        } else {
+          /* opponent won */
+          this.setState({
+            opponentScore: this.state.opponentScore + 1,
+            ball: newState,
+          })
+        }
+        this.setState({ pause: true })
+        this.resetGame()
+      }
+    }
+
+    handleInput = (keyCode) => {
+      console.log('keycode ', keyCode)
+      switch (keyCode) {
+        case PLAYER_UP:
+          console.log('Player UP')
+        case PLAYER_DOWN:
+          const movedPlayer = this.moveBoard(
+            this.state.player,
+            keyCode === PLAYER_UP
+          )
+          if (movedPlayer) {
+            this.setState({ player: movedPlayer, pause: false })
+          }
+          console.log('Player DOWN')
+          break
+        case PAUSE:
+          this.setState({ pause: true })
+          console.log('Pause')
+          break
+      }
+    }
+
+    render() {
+      const board = [...Array(ROW_SIZE * COL_SIZE)].map((_, pos) => {
+        let val = BACKGROUND
+        if (
+          this.state.player.indexOf(pos) !== -1 ||
+          this.state.opponent.indexOf(pos) !== -1
+        ) {
+          val = PLAYER
+        } else if (this.state.ball === pos) {
+          val = BALL
+        }
+        return <Box key={pos} k={pos} name={val} />
+      })
+
+      const divider = [...Array(ROW_SIZE / 2 + 2)].map((_) => <div>{'|'}</div>)
+      return (
+        <div style={outer}>
+          <h1> {this.state.pause ? 'PAUSED' : 'PLAYING'} </h1>
+          <div style={inner}>
+            <div style={score}>{this.state.playerScore}</div>
+            <div style={dividerStyle}>{' | '}</div>
+            <div style={dividerStyle}>{this.state.opponentScore}</div>
+          </div>
+          <div style={inner}>
+            <div style={style}>{board}</div>
+          </div>
+        </div>
+      )
+    }
+  }
+)

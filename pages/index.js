@@ -24,7 +24,7 @@ function Home({ Component, pageProps }) {
 
   //This function will redirect the page to the game screen
   const redirect = () => {
-    router.push({ pathname: '/App', query: { gameCode: channelCode } })
+    router.push({ pathname: '/game', query: { gameCode: channelCode } })
   }
 
   /********************Pusher Variables******************/
@@ -33,16 +33,23 @@ function Home({ Component, pageProps }) {
 
   /**********On Screen Load Functions************/
   const onScreenLoad = () => {
-    //Creating the pusher to listen in for the redirection signal
-    pusher = new Pusher(config.key, {
-      cluster: 'us2',
-      authEndpoint: 'api/pusher/auth',
-    })
+    //We first try to grab the pusher instance if it is already in memory.
+    //This way we do not get extra connections.
+    pusher = Pusher.instances[0]
+
+    //If the pusher instance doesn't exist we make one.
+    if (pusher == undefined) {
+      pusher = new Pusher(config.key, {
+        cluster: 'us2',
+        authEndpoint: 'api/pusher/auth',
+      })
+    }
+    //Now we connect to the channel and set up the function bindings.
     channel = pusher.subscribe('private-pong' + channelCode)
     channel.bind('client-controllerconnect', (message) => {
       if (message == 'Connected') {
-        redirect()
         channel.trigger('client-controllerconnectresponse', 'Recieved')
+        redirect()
       } else {
         channel.trigger('client-controllerconnectresponse', 'Error')
       }
