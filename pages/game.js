@@ -20,33 +20,46 @@ const PAUSE = 0 // space
 const inner = {
   display: 'flex',
   flexDirection: 'row',
-  justifyContent: 'justify',
+  justifyContent: 'center',
 }
 
 const outer = {
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'justify',
-  marginTop: '9em',
-  marginLeft: '25em',
+  justifyContent: 'center',
+  marginTop: '1em',
+  marginLeft: '0em',
   Text: '100px',
   padding: '10px',
 }
 const dividerStyle = {
-  marginLeft: '50px',
+  marginLeft: '5em',
+  marginRight: '5em',
   fontSize: '50px',
-  color: 'white',
+  color: 'black',
 }
 
-const score = {
-  marginLeft: '0px',
+const bar = {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+}
+
+const plaScore = {
   width: '100px',
   fontSize: '50px',
-  color: 'white',
+  color: 'black',
+  textAlign: 'left',
+}
+
+const oppScore = {
+  width: '100px',
+  fontSize: '50px',
+  color: 'black',
+  textAlign: 'right',
 }
 
 const style = {
-  width: '0px',
   heigth: '500px',
   display: 'grid',
   gridTemplate: `repeat(${ROW_SIZE}, 0fr) / repeat(${COL_SIZE}, 0fr)`,
@@ -290,18 +303,20 @@ export default withRouter(
         return <Box key={pos} k={pos} name={val} />
       })
 
-      const divider = [...Array(ROW_SIZE / 2 + 2)].map((_) => <div>{'|'}</div>)
+      /*const divider = [...Array(ROW_SIZE / 2 + 2)].map((_) => <div>{'|'}</div>)*/
       return (
-        <div style={outer}>
-          <h1> {this.state.pause ? 'PAUSED' : 'PLAYING'} </h1>
-          <div style={inner}>
-            <div style={score}>{this.state.playerScore}</div>
-            <div style={dividerStyle}>{' | '}</div>
-            <div style={dividerStyle}>{this.state.opponentScore}</div>
-          </div>
-          <div style={inner}>
-            <div style={style}>{board}</div>
-          </div>
+        <div>
+            <div style={bar}>
+                <div style={plaScore}>{this.state.playerScore}</div>
+                <div style={dividerStyle}>{'  Player : Computer'}</div>
+                <div style={oppScore}>{this.state.opponentScore}</div>
+            </div>
+            <div style={outer}>
+            <div style={inner}>
+                <div style={style}>{board}</div>
+            </div>
+            <h1 style={bar}> {this.state.pause ? 'PAUSED' : 'PLAYING'} </h1>
+            </div>
         </div>
       )
     }

@@ -23,7 +23,7 @@ const playerStyle = {
     width: "50px",
     borderStyle: "solid",
     justifyContent: "center",
-    backgroundColor : "blue",
+    backgroundColor : "#AD0202",
     color: "white"
 }
 
