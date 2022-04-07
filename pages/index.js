@@ -62,7 +62,10 @@ function Home({ Component, pageProps }) {
 
   /**********Display************/
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-blue-500 py-2">
+    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+      <video autoPlay muted loop id="myVideo">
+        <source src="/PongRecording2.mp4" type="video/mp4" />
+      </video>
       <div className="flex flex-col items-center justify-center rounded-md bg-white py-8 px-8">
         <div>
           <Canvas
