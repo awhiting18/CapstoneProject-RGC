@@ -62,11 +62,11 @@ function Home({ Component, pageProps }) {
 
   /**********Display************/
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+    <div className="z-0 flex min-h-screen flex-col items-center justify-center bg-black py-2">
       <video autoPlay muted loop id="myVideo">
         <source src="/PongRecording2.mp4" type="video/mp4" />
       </video>
-      <div className="flex flex-col items-center justify-center rounded-md bg-white py-8 px-8">
+      <div className="z-10 flex flex-col items-center justify-center rounded-md bg-white py-8 px-8">
         <div>
           <Canvas
             text={'https://objective-golick-b7cb36.netlify.app/'}
