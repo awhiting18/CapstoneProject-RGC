@@ -66,7 +66,11 @@ function Home({ Component, pageProps }) {
       <video autoPlay muted loop id="myVideo">
         <source src="/PongRecording2.mp4" type="video/mp4" />
       </video>
+
       <div className="z-10 flex flex-col items-center justify-center rounded-md bg-white py-8 px-8">
+        <div>
+          <text className="font-bold">SCAN TO PLAY!</text>
+        </div>
         <div>
           <Canvas
             text={'https://objective-golick-b7cb36.netlify.app/'}
@@ -85,7 +89,7 @@ function Home({ Component, pageProps }) {
           />
         </div>
         <div>
-          <text className="font-bold">Game Code: {channelCode}</text>
+          <text className="font-bold">GAME CODE: {channelCode}</text>
         </div>
       </div>
     </div>
