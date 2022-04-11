@@ -308,14 +308,14 @@ export default withRouter(
         <div>
             <div style={bar}>
                 <div style={plaScore}>{this.state.playerScore}</div>
-                <div style={dividerStyle}>{'  Player : Computer'}</div>
+                <div style={dividerStyle}><pre>{'  Player   :   Computer'}</pre></div>
                 <div style={oppScore}>{this.state.opponentScore}</div>
             </div>
             <div style={outer}>
             <div style={inner}>
                 <div style={style}>{board}</div>
             </div>
-            <h1 style={bar}> {this.state.pause ? 'PAUSED' : 'PLAYING'} </h1>
+            <h1 style={bar}> {this.state.pause ? 'PAUSED':'PLAYING'} </h1>
             </div>
         </div>
       )
