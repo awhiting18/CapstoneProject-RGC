@@ -4,6 +4,11 @@ import config from '../config.json'
 import Pusher from 'pusher-js'
 import { useQRCode } from 'next-qrcode'
 
+/**
+ * Description: The Home page for the game project.
+ * Authors: Travis Wisecup, Jean Paulsen, AJ Whiting
+ * Note: Use with Remote Game Control Controller project
+ */
 function Home({ Component, pageProps }) {
   /**********SETTING UP STATE***********/
   const [channelCode, setChannelCode] = useState(createChannelCode(5))
@@ -12,6 +17,14 @@ function Home({ Component, pageProps }) {
   const { Canvas } = useQRCode()
 
   /*************FUNCTIONS***************/
+
+  /**
+   * @description: This function creates a randamized alphanumeric string
+   * that is specified by the parameter length.
+   *
+   * @param {int} length : the length of the random string to be returned
+   * @returns a randomized alphanumeric string of the desired length
+   */
   function createChannelCode(length) {
     let result = ''
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -22,7 +35,9 @@ function Home({ Component, pageProps }) {
     return result
   }
 
-  //This function will redirect the page to the game screen
+  /**
+   * This function will redirect the page to the game screen
+   * */
   const redirect = () => {
     router.push({ pathname: '/game', query: { gameCode: channelCode } })
   }
@@ -32,6 +47,11 @@ function Home({ Component, pageProps }) {
   let channel
 
   /**********On Screen Load Functions************/
+  /**
+   * @description: This function is called when the screen loads. It connects
+   * to the pusher instance as well as sets up the pusher channel. Finally, it binds
+   * functions that are needed to redirect the page when the controller connects.
+   */
   const onScreenLoad = () => {
     //We first try to grab the pusher instance if it is already in memory.
     //This way we do not get extra connections.
@@ -61,6 +81,9 @@ function Home({ Component, pageProps }) {
   }, [])
 
   /**********Display************/
+  /**
+   * Description: The return function for what to render on the screen
+   */
   return (
     <div className="z-0 flex min-h-screen flex-col items-center justify-center bg-black py-2">
       <video autoPlay muted loop id="myVideo">

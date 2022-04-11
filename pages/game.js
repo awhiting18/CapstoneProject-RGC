@@ -65,6 +65,10 @@ const style = {
   gridTemplate: `repeat(${ROW_SIZE}, 0fr) / repeat(${COL_SIZE}, 0fr)`,
 }
 
+/**
+ * @description: This function creates the initial game state for pong.
+ * @returns returns the initial state for the game board
+ */
 const InitialState = () => {
   const paddle = [...Array(PADDLE_BOARD_SIZE)].map((_, pos) => pos)
   return {
@@ -89,8 +93,15 @@ const InitialState = () => {
 /* Timeout */
 let timeoutKey = 0
 
+/**
+ * @description: This function is the game itself. The other functions and return values make up the pong game.
+ */
 export default withRouter(
   class GameVersion2 extends React.Component {
+    /**
+     * @constructor: This function sets the state for the game.
+     * @param {*} props : any props that have been passed in.
+     */
     constructor(props) {
       super(props)
       this.state = InitialState()
@@ -99,7 +110,11 @@ export default withRouter(
       let gameCode
     }
 
-    //this function disconnects from the current game
+    /**
+     * @description: this function disconnects from the current game
+     * @param timeout : this is a boolean variable that tells us whether or not the disconnect
+     * call from from the timeout or from the user.
+     * */
     disconnect = (timeout) => {
       //If the disconnect was from a timeout, we send a message to the controller to  logout
       if (timeout) {
@@ -109,11 +124,19 @@ export default withRouter(
       this.props.router.push('./')
     }
 
+    /**
+     * @description : this function resets the game ball position.
+     */
     resetGame = () =>
       this.setState({
         ball: Math.round((ROW_SIZE * COL_SIZE) / 2) + ROW_SIZE,
       })
 
+    /**
+     * @description : this function moves the board and changes the state of the board.
+     * @param playerBoard:
+     * @param isUp:
+     */
     moveBoard = (playerBoard, isUp) => {
       const playerEdge = isUp
         ? playerBoard[0]
@@ -159,6 +182,10 @@ export default withRouter(
       return false
     }
 
+    /**
+     * @description : this function is called when the game is loaded onto the screen.
+     * It sets up the inital values for the pusher channel and instance.
+     */
     componentDidMount() {
       //We first try to grab the pusher instance if it is already in memory.
       this.pusher = Pusher.instances[0]
@@ -179,13 +206,13 @@ export default withRouter(
       })
       this.channel.bind('client-disconnect', () => this.disconnect(false))
 
-      /* moving the ball */
+      /** @description This function moves the ball */
       setInterval(() => {
         if (!this.state.pause) {
           this.bounceBall()
         }
       }, this.state.ballSpeed)
-      /* moving the opponent */
+      /** @description This function moves the opponent */
       setInterval(() => {
         if (!this.state.pause) {
           this.moveOpponent()
@@ -196,10 +223,20 @@ export default withRouter(
       console.log(this.channel)
     }
 
+    /**
+     * @description: This function is the edge collision detection for the game.
+     * @param {*} pos : the position of the ball
+     * @returns whether or not the ball is touching an edge.
+     */
     touchingEdge = (pos) =>
       (0 <= pos && pos < COL_SIZE) ||
       (COL_SIZE * (ROW_SIZE - 1) <= pos && pos < COL_SIZE * ROW_SIZE)
 
+    /**
+     * @description: This function is the paddle collision detection for the game.
+     * @param {*} pos : the position of the ball
+     * @returns whether or not the ball is touching a paddle.
+     */
     touchingPaddle = (pos) => {
       return (
         this.state.player.indexOf(pos) !== -1 ||
@@ -210,10 +247,18 @@ export default withRouter(
       )
     }
 
+    /**
+     * @description: This function tells whether or not a point has been scored
+     * @param {*} pos : the position of the ball
+     * @returns whether or not the ball has been scored.
+     */
     isScore = (pos) =>
       (this.state.deltaX === -1 && pos % COL_SIZE === 0) ||
       (this.state.deltaX === 1 && (pos + 1) % COL_SIZE === 0)
 
+    /**
+     * @description: This function moves the opponent.
+     */
     moveOpponent = () => {
       const movedPlayer = this.moveBoard(
         this.state.opponent,
@@ -224,12 +269,20 @@ export default withRouter(
         : this.setState({ opponentDir: !this.state.opponentDir })
     }
 
+    /**
+     * @description: This function tells whether or not the ball is touching the paddle edge
+     * @param {*} pos : the position of the ball
+     * @returns whether or not the ball is touching the paddle edge.
+     */
     touchingPaddleEdge = (pos) =>
       this.state.player[0] === pos ||
       this.state.player[PADDLE_BOARD_SIZE - 1] === pos ||
       this.state.opponent[0] === pos ||
       this.state.opponent[PADDLE_BOARD_SIZE - 1] === pos
 
+    /**
+     * @description: This function bounces the ball
+     */
     bounceBall = () => {
       const newState = this.state.ball + this.state.deltaY + this.state.deltaX
       if (this.touchingEdge(newState)) {
@@ -267,6 +320,10 @@ export default withRouter(
       }
     }
 
+    /**
+     * @description: This function handles the input coming in from the pusher channel.
+     * @param {*} keyCode : the direction of the movement or the command to pause the game.
+     */
     handleInput = (keyCode) => {
       console.log('keycode ', keyCode)
       switch (keyCode) {
@@ -289,6 +346,10 @@ export default withRouter(
       }
     }
 
+    /**
+     * @description: This function renders the game onto the screen
+     * @returns The game state
+     */
     render() {
       const board = [...Array(ROW_SIZE * COL_SIZE)].map((_, pos) => {
         let val = BACKGROUND
@@ -306,17 +367,17 @@ export default withRouter(
       /*const divider = [...Array(ROW_SIZE / 2 + 2)].map((_) => <div>{'|'}</div>)*/
       return (
         <div>
-            <div style={bar}>
-                <div style={plaScore}>{this.state.playerScore}</div>
-                <div style={dividerStyle}>{'  Player : Computer'}</div>
-                <div style={oppScore}>{this.state.opponentScore}</div>
-            </div>
-            <div style={outer}>
+          <div style={bar}>
+            <div style={plaScore}>{this.state.playerScore}</div>
+            <div style={dividerStyle}>{'  Player : Computer'}</div>
+            <div style={oppScore}>{this.state.opponentScore}</div>
+          </div>
+          <div style={outer}>
             <div style={inner}>
-                <div style={style}>{board}</div>
+              <div style={style}>{board}</div>
             </div>
             <h1 style={bar}> {this.state.pause ? 'PAUSED' : 'PLAYING'} </h1>
-            </div>
+          </div>
         </div>
       )
     }
