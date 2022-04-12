@@ -6,7 +6,9 @@ import { useQRCode } from 'next-qrcode'
 
 /**
  * Description: The Home page for the game project.
- * Authors: Travis Wisecup, Jean Paulsen, AJ Whiting
+ * @author Travis Wisecup
+ * @author Jean Paulsen
+ * @author AJ Whiting
  * Note: Use with Remote Game Control Controller project
  */
 function Home({ Component, pageProps }) {
@@ -24,6 +26,7 @@ function Home({ Component, pageProps }) {
    *
    * @param {int} length : the length of the random string to be returned
    * @returns a randomized alphanumeric string of the desired length
+   * @function createChannelCode
    */
   function createChannelCode(length) {
     let result = ''
@@ -37,6 +40,7 @@ function Home({ Component, pageProps }) {
 
   /**
    * This function will redirect the page to the game screen
+   * @function redirect
    * */
   const redirect = () => {
     router.push({ pathname: '/game', query: { gameCode: channelCode } })
@@ -51,6 +55,7 @@ function Home({ Component, pageProps }) {
    * @description: This function is called when the screen loads. It connects
    * to the pusher instance as well as sets up the pusher channel. Finally, it binds
    * functions that are needed to redirect the page when the controller connects.
+   * @function onScreenLoad
    */
   const onScreenLoad = () => {
     //We first try to grab the pusher instance if it is already in memory.

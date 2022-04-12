@@ -35,7 +35,9 @@ const ballStyle = {
   position: 'relative',
 }
 
-/**  function to select style */
+/**  function to select style
+ * @function getStyle
+ */
 const getStyle = (val) => {
   if (val === BACKGROUND) {
     return {}

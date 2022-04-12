@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: api/pusher/auth/index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,41 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: api/pusher/auth/index.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { pusher } from '../../../../lib'
 
+/**
+ * Description: This function authenticates the pusher connection.
+ * It is a serverless server function or lamba function
+ * @function handler
+ */
+export default async function handler(req, res) {
+  const { socket_id, channel_name } = req.body
 
-    <h3> </h3>
+  const randomID = Math.random().toString(36).slice(2)
 
+  const presenceData = {
+    user_id: randomID,
+  }
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+  try {
+    const auth = pusher.authenticate(socket_id, channel_name, presenceData)
+    res.send(auth)
+  } catch (error) {
+    console.error(error)
+  }
+}
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -66,8 +66,10 @@ const style = {
 }
 
 /**
- * @description: This function creates the initial game state for pong.
+ *   This function creates the initial game state for pong.
  * @returns returns the initial state for the game board
+ * @function InitialState
+ *
  */
 const InitialState = () => {
   const paddle = [...Array(PADDLE_BOARD_SIZE)].map((_, pos) => pos)
@@ -94,7 +96,7 @@ const InitialState = () => {
 let timeoutKey = 0
 
 /**
- * @description: This function is the game itself. The other functions and return values make up the pong game.
+ *   This function is the game itself. The other functions and return values make up the pong game.
  */
 export default withRouter(
   class GameVersion2 extends React.Component {
@@ -111,9 +113,10 @@ export default withRouter(
     }
 
     /**
-     * @description: this function disconnects from the current game
+     *   this function disconnects from the current game
      * @param timeout : this is a boolean variable that tells us whether or not the disconnect
      * call from from the timeout or from the user.
+     * @function disconnect
      * */
     disconnect = (timeout) => {
       //If the disconnect was from a timeout, we send a message to the controller to  logout
@@ -125,7 +128,8 @@ export default withRouter(
     }
 
     /**
-     * @description : this function resets the game ball position.
+     *    this function resets the game ball position.
+     * @function resetGame
      */
     resetGame = () =>
       this.setState({
@@ -133,9 +137,10 @@ export default withRouter(
       })
 
     /**
-     * @description : this function moves the board and changes the state of the board.
+     *  this function moves the board and changes the state of the board.
      * @param playerBoard:
      * @param isUp:
+     * @function moveBoard
      */
     moveBoard = (playerBoard, isUp) => {
       const playerEdge = isUp
@@ -183,8 +188,9 @@ export default withRouter(
     }
 
     /**
-     * @description : this function is called when the game is loaded onto the screen.
+     * this function is called when the game is loaded onto the screen.
      * It sets up the inital values for the pusher channel and instance.
+     * @function componentDidMount
      */
     componentDidMount() {
       //We first try to grab the pusher instance if it is already in memory.
@@ -206,13 +212,13 @@ export default withRouter(
       })
       this.channel.bind('client-disconnect', () => this.disconnect(false))
 
-      /** @description This function moves the ball */
+      /** This function moves the ball*/
       setInterval(() => {
         if (!this.state.pause) {
           this.bounceBall()
         }
       }, this.state.ballSpeed)
-      /** @description This function moves the opponent */
+      /** This function moves the opponent*/
       setInterval(() => {
         if (!this.state.pause) {
           this.moveOpponent()
@@ -224,18 +230,20 @@ export default withRouter(
     }
 
     /**
-     * @description: This function is the edge collision detection for the game.
+     * This function is the edge collision detection for the game.
      * @param {*} pos : the position of the ball
      * @returns whether or not the ball is touching an edge.
+     * @function touchingEdge
      */
     touchingEdge = (pos) =>
       (0 <= pos && pos < COL_SIZE) ||
       (COL_SIZE * (ROW_SIZE - 1) <= pos && pos < COL_SIZE * ROW_SIZE)
 
     /**
-     * @description: This function is the paddle collision detection for the game.
+     *   This function is the paddle collision detection for the game.
      * @param {*} pos : the position of the ball
      * @returns whether or not the ball is touching a paddle.
+     * @function touchingPaddle
      */
     touchingPaddle = (pos) => {
       return (
@@ -248,16 +256,18 @@ export default withRouter(
     }
 
     /**
-     * @description: This function tells whether or not a point has been scored
+     *   This function tells whether or not a point has been scored
      * @param {*} pos : the position of the ball
      * @returns whether or not the ball has been scored.
+     * @function isScore
      */
     isScore = (pos) =>
       (this.state.deltaX === -1 && pos % COL_SIZE === 0) ||
       (this.state.deltaX === 1 && (pos + 1) % COL_SIZE === 0)
 
     /**
-     * @description: This function moves the opponent.
+     *   This function moves the opponent.
+     * @function moveOpponent
      */
     moveOpponent = () => {
       const movedPlayer = this.moveBoard(
@@ -270,9 +280,10 @@ export default withRouter(
     }
 
     /**
-     * @description: This function tells whether or not the ball is touching the paddle edge
+     *   This function tells whether or not the ball is touching the paddle edge
      * @param {*} pos : the position of the ball
      * @returns whether or not the ball is touching the paddle edge.
+     * @function touchingPaddleEdge
      */
     touchingPaddleEdge = (pos) =>
       this.state.player[0] === pos ||
@@ -281,7 +292,8 @@ export default withRouter(
       this.state.opponent[PADDLE_BOARD_SIZE - 1] === pos
 
     /**
-     * @description: This function bounces the ball
+     *   This function bounces the ball
+     * @function bounceBall
      */
     bounceBall = () => {
       const newState = this.state.ball + this.state.deltaY + this.state.deltaX
@@ -321,8 +333,9 @@ export default withRouter(
     }
 
     /**
-     * @description: This function handles the input coming in from the pusher channel.
+     *   This function handles the input coming in from the pusher channel.
      * @param {*} keyCode : the direction of the movement or the command to pause the game.
+     * @function handleInput
      */
     handleInput = (keyCode) => {
       console.log('keycode ', keyCode)
@@ -347,8 +360,9 @@ export default withRouter(
     }
 
     /**
-     * @description: This function renders the game onto the screen
+     *   This function renders the game onto the screen
      * @returns The game state
+     * @function render
      */
     render() {
       const board = [...Array(ROW_SIZE * COL_SIZE)].map((_, pos) => {

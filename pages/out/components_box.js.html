@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: components/box.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,76 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: components/box.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react'
 
+/* Enum */
+const BACKGROUND = 0
+const PLAYER = 1
+const BALL = 2
+export { BACKGROUND, PLAYER, BALL }
+/* style sheet */
+const backgroundStyle = {
+  height: '50px',
+  width: '50px',
+  borderStyle: 'solid',
+  justifyContent: 'center',
+  backgroundColor: 'black',
+  borderRadius: '0px',
+}
+const playerStyle = {
+  height: '50px',
+  width: '50px',
+  borderStyle: 'solid',
+  justifyContent: 'center',
+  backgroundColor: '#AD0202',
+  color: 'white',
+}
 
-    <h3> </h3>
+const ballStyle = {
+  height: '50px',
+  width: '50px',
+  display: 'block',
+  backgroundColor: 'yellow',
+  justifyContent: 'center',
+  borderRadius: '100%',
+  color: 'white',
+  zIndex: '10',
+  position: 'relative',
+}
 
+/**  function to select style
+ * @function getStyle
+ */
+const getStyle = (val) => {
+  if (val === BACKGROUND) {
+    return {}
+  }
+  if (val === PLAYER) {
+    return playerStyle
+  } else {
+    return ballStyle
+  }
+}
 
+const Box = (props) => (
+  &lt;div style={backgroundStyle}>
+    &lt;div style={getStyle(props.name)} />
+  &lt;/div>
+)
 
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export default Box
+</code></pre>
+        </article>
+    </section>
 
 
 
