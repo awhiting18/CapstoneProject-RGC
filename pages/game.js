@@ -227,6 +227,8 @@ export default withRouter(
 
       document.title = 'ping-pong'
       console.log(this.channel)
+
+      timeoutKey = setTimeout(() => this.disconnect(true), 45000)
     }
 
     /**
