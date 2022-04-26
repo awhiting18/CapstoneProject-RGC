@@ -148,9 +148,7 @@ export default withRouter(
         : playerBoard[PADDLE_BOARD_SIZE - 1]
 
       /* Timeout */
-      if (timeoutKey != 0) {
-        clearTimeout(timeoutKey)
-      }
+      clearTimeout(timeoutKey)
       timeoutKey = setTimeout(() => this.disconnect(true), 45000)
 
       if (!this.touchingEdge(playerEdge)) {
