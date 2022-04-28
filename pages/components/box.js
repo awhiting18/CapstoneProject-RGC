@@ -3,8 +3,9 @@ import React from 'react'
 /* Enum */
 const BACKGROUND = 0
 const PLAYER = 1
-const BALL = 2
-export { BACKGROUND, PLAYER, BALL }
+const COMPUTER = 2
+const BALL = 3
+export { BACKGROUND, PLAYER, COMPUTER, BALL }
 /* style sheet */
 const backgroundStyle = {
   height: '50px',
@@ -20,6 +21,14 @@ const playerStyle = {
   borderStyle: 'solid',
   justifyContent: 'center',
   backgroundColor: '#AD0202',
+  color: 'white',
+}
+const computerStyle = {
+  height: '50px',
+  width: '50px',
+  borderStyle: 'solid',
+  justifyContent: 'center',
+  backgroundColor: '#02ADAD',
   color: 'white',
 }
 
@@ -44,6 +53,8 @@ const getStyle = (val) => {
   }
   if (val === PLAYER) {
     return playerStyle
+  } else if (val === COMPUTER) {
+    return computerStyle
   } else {
     return ballStyle
   }

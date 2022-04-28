@@ -90,14 +90,14 @@ function Home({ Component, pageProps }) {
    * Description: The return function for what to render on the screen
    */
   return (
-    <div className="z-0 flex min-h-screen flex-col items-center justify-center bg-black py-2">
+    <div className="z-0 flex min-h-screen flex-col items-center justify-center bg-white py-2">
       <video autoPlay muted loop id="myVideo">
-        <source src="/PongRecording2.mp4" type="video/mp4" />
+        <source src="/backgroundVideo.mp4" type="video/mp4" />
       </video>
 
-      <div className="z-10 flex flex-col items-center justify-center rounded-md bg-white py-8 px-8">
+      <div className="z-10 flex flex-col items-center justify-center rounded-md bg-red-700 py-8 px-8">
         <div>
-          <text className="font-bold">SCAN TO PLAY!</text>
+          <text className="font-bold text-white">SCAN TO PLAY!</text>
         </div>
         <div>
           <Canvas
@@ -117,7 +117,7 @@ function Home({ Component, pageProps }) {
           />
         </div>
         <div>
-          <text className="font-bold">GAME CODE: {channelCode}</text>
+          <text className="font-bold text-white">GAME CODE: {channelCode}</text>
         </div>
       </div>
     </div>
