@@ -20,6 +20,14 @@ then:
     $ npm run build
     $ npm start
 
+# Pusher setup
+
+Go to https://pusher.com/ and create an account
+Create a channel app
+navigate to the App Keys tab
+copy and paste those keys into config.json \*note: make sure that it is formatted in json.
+That should be it!
+
 # Features
 
 -passes messages from client to server currently. Later, this will be the game side that the user connects to with their phone and the QR code.
