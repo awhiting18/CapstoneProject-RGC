@@ -70,11 +70,18 @@ function Home({ Component, pageProps }) {
       })
     }
     //Now we connect to the channel and set up the function bindings.
-    channel = pusher.subscribe('private-pong' + channelCode)
+    channel = pusher.subscribe('presence-pong' + channelCode)
+    console.log(channel.members.count)
     channel.bind('client-controllerconnect', (message) => {
       if (message == 'Connected') {
-        channel.trigger('client-controllerconnectresponse', 'Recieved')
-        redirect()
+        let count = channel.members.count
+        console.log(channel.members.count)
+        if (count <= 2) {
+          channel.trigger('client-controllerconnectresponse', 'Recieved')
+          redirect()
+        } else {
+          channel.trigger('client-controllerconnectresponse', 'Full')
+        }
       } else {
         channel.trigger('client-controllerconnectresponse', 'Error')
       }

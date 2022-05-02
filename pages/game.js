@@ -123,7 +123,7 @@ export default withRouter(
       if (timeout) {
         this.channel.trigger('client-disconnect', 'Disconnect')
       }
-      this.pusher.unsubscribe('private-pong' + this.gameCode)
+      this.pusher.unsubscribe('presence-pong' + this.gameCode)
       this.props.router.push('./')
     }
 
@@ -197,11 +197,11 @@ export default withRouter(
 
       //Now we can use the pusher in memory to grab the channel that was previously subscribed to on the index page
       this.channel =
-        this.pusher.channels.channels['private-pong' + this.gameCode]
+        this.pusher.channels.channels['presence-pong' + this.gameCode]
 
       //We check for channel being undefined and if it is, then we reconnect to the correct channel
       if (this.channel == undefined) {
-        this.channel = this.pusher.subscribe('private-pong' + this.gameCode)
+        this.channel = this.pusher.subscribe('presence-pong' + this.gameCode)
       }
 
       //Function bindings
